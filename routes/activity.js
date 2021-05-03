@@ -102,7 +102,7 @@ exports.execute = function (req, res) {
         }
 
         if (decoded && decoded.inArguments && decoded.inArguments.length > 0) {
-            
+          console.log('Decoded Data :'+ JSON.stringify(decoded));
             // decoded in arguments
             MCEndpoint = '/hub/v1/dataevents/key:'+ decoded.inArguments[0].DEName +'/rowset' ;          
           var pkColumnNumberData =  decoded.inArguments[0].pkColumnNumber;
