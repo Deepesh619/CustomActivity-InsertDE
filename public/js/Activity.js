@@ -31,6 +31,7 @@ connection.on('initActivity',function(data){
     document.getElementById('pkDestColumnName'+i).value = payload['arguments'].execute.inArguments[0]['pkDestColumnName'+i];
    }
    for (var i=1;i<=columnNumberData;i++){
+    document.getElementById('checkBoxElement'+i).checked = payload['arguments'].execute.inArguments[0]['enableDefaultValue'+i];   
     document.getElementById('srcColumnName'+i).value = payload['arguments'].execute.inArguments[0]['srcColumnName'+i];
     document.getElementById('destColumnName'+i).value = payload['arguments'].execute.inArguments[0]['destColumnName'+i];
    }
@@ -92,7 +93,7 @@ function createrows(){
     }
     var row = table.insertRow(i);
     var cell1 = row.insertCell(0);
-    cell1.innerHTML="Primary Destination Column "+i;
+    cell1.innerHTML="Primary Column "+i;
     var cell2 = row.insertCell(1);
     var element1 = document.createElement("textarea");
     element1.id="pkSrcColumnName"+i;
@@ -115,7 +116,7 @@ function createrows(){
     }
     var row = table2.insertRow(i);
     var cell1 = row.insertCell(0);
-    cell1.innerHTML="Non-Primary Destination Column "+i;
+    cell1.innerHTML="Non-Primary Column "+i;
     var cell2 = row.insertCell(1);
     var element1 = document.createElement("textarea");
     element1.id="srcColumnName"+i;
@@ -124,6 +125,13 @@ function createrows(){
     var element2 = document.createElement("textarea");
     element2.id="destColumnName"+i;
     cell3.appendChild(element2);
+    var cell4 = row.insertCell(3);
+    // Code for Checkbox Start
+    var checkBoxElement1 = document.createElement("input");
+    checkBoxElement1.type="checkbox"
+    checkBoxElement1.id="checkBoxElement" + i;
+    cell4.appendChild(checkBoxElement1);
+    //Code for checkbox Stop
     }
 }
 
@@ -174,14 +182,21 @@ function save () {
         var sourceColumnName = document.getElementById('pkSrcColumnName'+i).value;
         var destColumnName = document.getElementById('pkDestColumnName'+i).value;
         inArguments["pkSrcColumnName"+i]=sourceColumnName;
-        inArguments["pkSrcColumnValue"+i]="{{Event."+ eventDefinitionKey +"."+sourceColumnName+"}}";
+        inArguments["pkSrcColumnValue"+i]="{{Event."+ eventDefinitionKey +".\""+sourceColumnName+"\"}}";
         inArguments["pkDestColumnName"+i]=destColumnName;
     }
     for (var i=1;i<=columnNumber;i++){
         var sourceColumnName = document.getElementById('srcColumnName'+i).value;
         var destColumnName = document.getElementById('destColumnName'+i).value;
+        var enableDefaultValue = document.getElementById('checkBoxElement'+i).checked;
+        inArguments["enableDefaultValue"+i]=enableDefaultValue;
         inArguments["srcColumnName"+i]=sourceColumnName;
-        inArguments["srcColumnValue"+i]="{{Event."+ eventDefinitionKey +"."+sourceColumnName+"}}";
+        if (enableDefaultValue == true){
+        inArguments["srcColumnValue"+i]=sourceColumnName;
+        }
+        else {
+        inArguments["srcColumnValue"+i]="{{Event."+ eventDefinitionKey +".\""+sourceColumnName+"\"}}";
+        }
         inArguments["destColumnName"+i]=destColumnName;
     }
     inArguments["pkColumnNumber"]=pkColumnNumber;
