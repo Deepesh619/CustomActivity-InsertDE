@@ -43,10 +43,18 @@
             "timeout": 10000
         },
         "publish": {
-            "url": "https://pexa-insertde-dev.herokuapp.com/journeybuilder/publish"
+            "url": "https://pexa-insertde-dev.herokuapp.com/journeybuilder/publish",
+            "body": "",
+           "header": "",
+            "useJwt": true,
+            "timeout": 10000
         },
         "validate": {
-            "url": "https://pexa-insertde-dev.herokuapp.com/journeybuilder/validate"
+            "url": "https://pexa-insertde-dev.herokuapp.com/journeybuilder/validate",
+            "body": "",
+           "header": "",
+            "useJwt": true,
+            "timeout": 10000
         }
         
     },
