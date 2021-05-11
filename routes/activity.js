@@ -131,7 +131,7 @@ exports.execute = function (req, res) {
         }
     }); 
     
-    console.log('MCEndpoint is : ', MCEndpoint);
+   // console.log('MCEndpoint is : ', MCEndpoint);
     // Calling performPostRequest to fetch the access token
      performPostRequest(authEndpoint,authHost,authHeaders, method, authData, function(data) {
         accesstoken = data.access_token;
@@ -207,7 +207,7 @@ function insertRecordsIntoDE(rowData,accesstoken){
     'Content-Type': 'application/json',
     'Authorization' : 'Bearer ' + accesstoken
   };
-  console.log('Row data From Inarguments'+JSON.stringify(rowData));
+  //console.log('Row data From Inarguments'+JSON.stringify(rowData));
   performPostRequest(MCEndpoint,MCHost,MCHeaders, method, rowData, function(data) {
     //console.log(data);
   });
