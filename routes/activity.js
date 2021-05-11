@@ -72,7 +72,7 @@ function logData(req) {
 exports.edit = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     //console.log( req.body );
-    logData(req);
+   // logData(req);
     res.send(200, 'Edit');
 };
 
@@ -103,7 +103,7 @@ exports.execute = function (req, res) {
         }
 
         if (decoded && decoded.inArguments && decoded.inArguments.length > 0) {
-          console.log('Decoded Data :'+ JSON.stringify(decoded));
+         // console.log('Decoded Data :'+ JSON.stringify(decoded));
             // decoded in arguments
             MCEndpoint = '/hub/v1/dataevents/key:'+ decoded.inArguments[0].DEName +'/rowset' ;          
           var pkColumnNumberData =  decoded.inArguments[0].pkColumnNumber;
@@ -124,7 +124,7 @@ exports.execute = function (req, res) {
               "keys":setKey,
               "values":setValues             
                     }]; 
-                    console.log('Row Data :'+ JSON.stringify(rowData));              
+                   // console.log('Row Data :'+ JSON.stringify(rowData));              
         } else {
             console.error('inArguments invalid.');
             return res.status(400).end();
@@ -135,7 +135,7 @@ exports.execute = function (req, res) {
     // Calling performPostRequest to fetch the access token
      performPostRequest(authEndpoint,authHost,authHeaders, method, authData, function(data) {
         accesstoken = data.access_token;
-        console.log('Access token is: ', accesstoken);
+       
         // After getting access token, calling insertRecordsIntoDE to insert the records
         insertRecordsIntoDE(rowData,accesstoken);
       });
@@ -149,7 +149,7 @@ exports.execute = function (req, res) {
 exports.publish = function (req, res) {
     // Data from the req and put it in an array accessible to the main app.
     //console.log( req.body );
-    logData(req);
+   // logData(req);
     res.send(200, 'Publish');
     console.log('Published');
 };
@@ -172,7 +172,7 @@ exports.validate = function (req, res) {
 
 function  performPostRequest(endpoint,host,headers, method, data, success) {
   var dataString = JSON.stringify(data);
-  console.log(headers);
+  //console.log(headers);
   var options = {
     host: host,
     path: endpoint,
@@ -209,6 +209,6 @@ function insertRecordsIntoDE(rowData,accesstoken){
   };
   console.log('Row data From Inarguments'+JSON.stringify(rowData));
   performPostRequest(MCEndpoint,MCHost,MCHeaders, method, rowData, function(data) {
-    console.log(data);
+    //console.log(data);
   });
 }
