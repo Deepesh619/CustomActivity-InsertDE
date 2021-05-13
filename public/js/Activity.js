@@ -25,7 +25,7 @@ function(eventDefinitionModel) {
 
 
 function performRequest(){
-    var http = new XMLHttpRequest();
+    /*var http = new XMLHttpRequest();
     var url = 'https://mcllzpmqql69yd9kvcz1n-mj1fqy.auth.marketingcloudapis.com/v2/token';
     var data = new FormData();
     data.append('client_id', '1ye7xpmi31xwlu7xotjkauyv');
@@ -39,18 +39,24 @@ function performRequest(){
             document.getElementById('DEName_v2').value= JSON.parse(http.responseText).access_token;
         }
     }
-    http.send(data);
+    http.send(data); */
 
-   /* fetch("https://ipinfo.io/json")
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (myJson) {
-        document.querySelector("#ipText").innerHTML = myJson.ip;
-      })
-      .catch(function (error) {
-        console.log("Error: " + error);
-      }); */
+   const url = "https://mcllzpmqql69yd9kvcz1n-mj1fqy.auth.marketingcloudapis.com/v2/token";
+fetch(url, {
+    method : "POST",
+   // body: new FormData(document.getElementById("inputform")),
+    // -- or --
+     body : JSON.stringify({
+        'client_id' : '1ye7xpmi31xwlu7xotjkauyv',
+        'client_secret':'Z3bAfZPzvGM05d7cu05RVTmx'
+        // ...
+     })
+}).then(
+    response => response.text() // .json(), etc.
+    // same as function(response) {return response.text();}
+).then(
+    html => console.log(html)
+); 
 
 
 }
