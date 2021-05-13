@@ -33,11 +33,7 @@ function performRequest(){
     http.open('POST', url, true);
     
     //Send the proper header information along with the request
-    http.setRequestHeader('Content-type', 'application/json');
-    http.setRequestHeader("Access-Control-Allow-Origin", "*")
-    http.setRequestHeader("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
-    http.setRequestHeader("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
-    
+    http.setRequestHeader('Content-type', 'application/json','Access-Control-Allow-Origin', '*','Access-Control-Allow-Methods', 'DELETE, POST, GET, OPTIONS','Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With'); 
     http.onreadystatechange = function() {//Call a function when the state changes.
         if(http.readyState == 4 && http.status == 200) {
             document.getElementById('DEName_v2').value= JSON.parse(http.responseText).access_token;
