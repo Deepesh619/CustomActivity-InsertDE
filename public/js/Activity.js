@@ -41,7 +41,7 @@ function performRequest(){
     }
     http.send(data); */
 
-   const url = "https://mcllzpmqql69yd9kvcz1n-mj1fqy.auth.marketingcloudapis.com/v2/token";
+  /* const url = "https://mcllzpmqql69yd9kvcz1n-mj1fqy.auth.marketingcloudapis.com/v2/token";
 fetch(url, {
     method : "POST",
     mode: 'no-cors',
@@ -59,7 +59,7 @@ fetch(url, {
    // html => console.log(html)
 ); 
 
-
+*/
 }
 
 // Below event is executed when activity is loaded on UI
