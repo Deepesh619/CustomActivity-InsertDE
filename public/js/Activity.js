@@ -13,6 +13,35 @@ var columnNumber = 0;
 var eventDefinitionKey;
 
 connection.trigger('ready');
+// Below event is executed anytime and is used to get the event definition key
+
+connection.trigger('requestTriggerEventDefinition');
+connection.on('requestedTriggerEventDefinition',
+function(eventDefinitionModel) {
+   if(eventDefinitionModel){
+     eventDefinitionKey = eventDefinitionModel.eventDefinitionKey;
+   }
+});
+
+
+function performRequest(){
+    var http = new XMLHttpRequest();
+    var url = 'https://mcllzpmqql69yd9kvcz1n-mj1fqy.auth.marketingcloudapis.com/v2/token';
+    var data = new FormData();
+    data.append('client_id', '1ye7xpmi31xwlu7xotjkauyv');
+    data.append('client_secret', 'Z3bAfZPzvGM05d7cu05RVTmx');
+    http.open('POST', url, true);
+    
+    //Send the proper header information along with the request
+    http.setRequestHeader('Content-type', 'application/json');
+    
+    http.onreadystatechange = function() {//Call a function when the state changes.
+        if(http.readyState == 4 && http.status == 200) {
+            document.getElementById('DEName_v2').value= JSON.parse(http.responseText).access_token;
+        }
+    }
+    http.send(data);
+}
 
 // Below event is executed when activity is loaded on UI
 
@@ -21,6 +50,7 @@ connection.on('initActivity',function(data){
    if (data) {
        payload = data;
    }
+   performRequest();
    var pkColumnNumberData =  payload['arguments'].execute.inArguments[0].pkColumnNumber;
    var columnNumberData =  payload['arguments'].execute.inArguments[0].columnNumber;
    document.getElementById('DEName').value= payload['arguments'].execute.inArguments[0].DEName;
@@ -38,15 +68,7 @@ connection.on('initActivity',function(data){
    }
 }); 
 
-// Below event is executed any and is used to get the event definition key
 
-connection.trigger('requestTriggerEventDefinition');
-connection.on('requestedTriggerEventDefinition',
-function(eventDefinitionModel) {
-   if(eventDefinitionModel){
-     eventDefinitionKey = eventDefinitionModel.eventDefinitionKey;
-   }
-}); 
 
 // Below event is executed when next/Done/Back is clicked on UI
 
