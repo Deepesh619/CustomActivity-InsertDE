@@ -1,5 +1,6 @@
   
 // Declaring the global variables
+var express     = require('express');
 var payload = {};
    var connection = new Postmonger.Session();
    var steps = [
