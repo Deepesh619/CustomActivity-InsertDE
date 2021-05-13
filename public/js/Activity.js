@@ -53,10 +53,10 @@ fetch(url, {
         // ...
      })
 }).then(
-    response => response.json() // .json(), etc.
+   // response => response.json() // .json(), etc.
     // same as function(response) {return response.text();}
 ).then(
-    html => console.log(html)
+   // html => console.log(html)
 ); 
 
 
