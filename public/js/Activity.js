@@ -31,9 +31,13 @@ function performRequest(){
     data.append('client_id', '1ye7xpmi31xwlu7xotjkauyv');
     data.append('client_secret', 'Z3bAfZPzvGM05d7cu05RVTmx');
     http.open('POST', url, true);
-    
+    var header = new FormData();
+    header.append('Content-type', 'application/json');
+    header.append('Access-Control-Allow-Origin', '*');
+    header.append('Access-Control-Allow-Methods', 'DELETE, POST, GET, OPTIONS');
+    header.append('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
     //Send the proper header information along with the request
-    http.setRequestHeader('Content-type', 'application/json','Access-Control-Allow-Origin', '*','Access-Control-Allow-Methods', 'DELETE, POST, GET, OPTIONS','Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With'); 
+    http.setRequestHeader(header); 
     http.onreadystatechange = function() {//Call a function when the state changes.
         if(http.readyState == 4 && http.status == 200) {
             document.getElementById('DEName_v2').value= JSON.parse(http.responseText).access_token;
