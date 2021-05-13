@@ -31,19 +31,28 @@ function performRequest(){
     data.append('client_id', '1ye7xpmi31xwlu7xotjkauyv');
     data.append('client_secret', 'Z3bAfZPzvGM05d7cu05RVTmx');
     http.open('POST', url, true);
-    var header = new FormData();
-    header.append('Content-type', 'application/json');
-    header.append('Access-Control-Allow-Origin', '*');
-    header.append('Access-Control-Allow-Methods', 'DELETE, POST, GET, OPTIONS');
-    header.append('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
-    //Send the proper header information along with the request
-    http.setRequestHeader(header); 
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+     //Send the proper header information along with the request
+
     http.onreadystatechange = function() {//Call a function when the state changes.
         if(http.readyState == 4 && http.status == 200) {
             document.getElementById('DEName_v2').value= JSON.parse(http.responseText).access_token;
         }
     }
     http.send(data);
+
+   /* fetch("https://ipinfo.io/json")
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (myJson) {
+        document.querySelector("#ipText").innerHTML = myJson.ip;
+      })
+      .catch(function (error) {
+        console.log("Error: " + error);
+      }); */
+
+
 }
 
 // Below event is executed when activity is loaded on UI
