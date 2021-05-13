@@ -44,6 +44,7 @@ function performRequest(){
    const url = "https://mcllzpmqql69yd9kvcz1n-mj1fqy.auth.marketingcloudapis.com/v2/token";
 fetch(url, {
     method : "POST",
+    mode: 'no-cors',
    // body: new FormData(document.getElementById("inputform")),
     // -- or --
      body : JSON.stringify({
