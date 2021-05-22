@@ -105,7 +105,7 @@ function createrows(){
     var cell1 = row.insertCell(0);
     cell1.innerHTML="Primary Column "+i;
     var cell2 = row.insertCell(1);
-    var element1 = document.createElement("textarea");
+    var element1 = document.createElement("select");
     element1.id="pkSrcColumnName"+i;
     cell2.appendChild(element1);
     var cell3 = row.insertCell(2);
@@ -128,7 +128,7 @@ function createrows(){
     var cell1 = row.insertCell(0);
     cell1.innerHTML="Non-Primary Column "+i;
     var cell2 = row.insertCell(1);
-    var element1 = document.createElement("textarea");
+    var element1 = document.createElement("select");
     element1.id="srcColumnName"+i;
     cell2.appendChild(element1);
     var cell3 = row.insertCell(2);
