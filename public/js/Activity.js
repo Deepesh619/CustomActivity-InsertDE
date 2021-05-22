@@ -11,6 +11,7 @@ var currentStep = steps[0].key;
 var pkColumnNumber = 0;
 var columnNumber = 0;
 var eventDefinitionKey;
+var dataExtensionID;
 
 connection.trigger('ready');
 // Below event is executed anytime and is used to get the event definition key
@@ -20,6 +21,7 @@ connection.on('requestedTriggerEventDefinition',
 function(eventDefinitionModel) {
    if(eventDefinitionModel){
      eventDefinitionKey = eventDefinitionModel.eventDefinitionKey;
+     dataExtensionID = eventDefinitionModel.dataExtensionId;
    }
 });
 
@@ -99,11 +101,11 @@ function createrows(){
     var cell1 = row.insertCell(0);
     cell1.innerHTML="Primary Column "+i;
     var cell2 = row.insertCell(1);
-    var element1 = document.createElement("textarea");
+    var element1 = document.createElement("select");
     element1.id="pkSrcColumnName"+i;
     cell2.appendChild(element1);
     var cell3 = row.insertCell(2);
-    var element2 = document.createElement("textarea");
+    var element2 = document.createElement("select");
     element2.id="pkDestColumnName"+i;
     cell3.appendChild(element2);
     }
@@ -122,11 +124,11 @@ function createrows(){
     var cell1 = row.insertCell(0);
     cell1.innerHTML="Non-Primary Column "+i;
     var cell2 = row.insertCell(1);
-    var element1 = document.createElement("textarea");
+    var element1 = document.createElement("select");
     element1.id="srcColumnName"+i;
     cell2.appendChild(element1);
     var cell3 = row.insertCell(2);
-    var element2 = document.createElement("textarea");
+    var element2 = document.createElement("select");
     element2.id="destColumnName"+i;
     cell3.appendChild(element2);
     var cell4 = row.insertCell(3);
@@ -137,6 +139,7 @@ function createrows(){
     cell4.appendChild(checkBoxElement1);
     //Code for checkbox Stop
     }
+    addSrcColumnNames(pkColumnNumber,columnNumber);
 }
 
 // onClickedBack function is called when user click on back button on UI
@@ -216,8 +219,8 @@ function save () {
    connection.trigger('updateActivity', payload);
 }
 
-/*
-function getEntrySourceColumnList(objectID){
+
+function getEntrySourceColumnList(objectID,pkColumnNumber,columnNumber){
     var http = new XMLHttpRequest();
     var ID = objectID;
     var url = 'https://mcservicecall-dev.herokuapp.com/MCService/getColumnList?ID='+ID + '&DEName=false';
@@ -228,17 +231,48 @@ function getEntrySourceColumnList(objectID){
             var obj = {};
             obj = JSON.parse(this.responseText);
             console.log(obj);
-            var select = document.getElementById("srcColumnName");
+            var select = document.getElementById("pkSrcColumnName1");
             select.innerHTML = "";
             for(var index in obj) {
             select.options[select.options.length] = new Option(obj[index], obj[index]);
             }
-            document.getElementById('srcColumnName').value= payload['arguments'].execute.inArguments[0].srcColumnName;
+            for (var i=2;i<=pkColumnNumber;i++){
+                document.getElementById('pkSrcColumnName'+i).innerHTML= select.innerHTML;
+                }
+            for (var i=1;i<=columnNumber;i++){
+                document.getElementById('srcColumnName'+i).innerHTML= select.innerHTML;
+                }
         }
     }
     http.send(data); 
   }
-  */
+  
+  function getColumnList(option){   
+    var http = new XMLHttpRequest();
+    var ID = option.value;
+    var url = 'https://mcservicecall-dev.herokuapp.com/MCService/getColumnList?ID='+ID+ '&DEName=true';
+    var data = new FormData();
+    http.open('GET', url);
+    http.onreadystatechange = function() {//Call a function when the state changes.
+        if(http.readyState == 4 && http.status == 200) {
+            var obj = {};
+            obj = JSON.parse(this.responseText);
+            console.log(obj);
+            var select = document.getElementById("pkDestColumnName1");
+            select.innerHTML = "";
+            for(var index in obj) {
+            select.options[select.options.length] = new Option(obj[index], obj[index]);
+            }
+            for (var i=2;i<=pkColumnNumber;i++){
+                document.getElementById('pkDestColumnName'+i).innerHTML= select.innerHTML;
+                }
+            for (var i=1;i<=columnNumber;i++){
+                document.getElementById('destColumnName'+i).innerHTML= select.innerHTML;
+                }
+           }
+    }
+    http.send(data); 
+  }
 
   function getDEList(){
     var http = new XMLHttpRequest();
@@ -254,11 +288,16 @@ function getEntrySourceColumnList(objectID){
             select.options[select.options.length] = new Option(obj[index], index);// new Option(text-DEName, value-CustomerKey)
             }
             document.getElementById('DEName').value= payload['arguments'].execute.inArguments[0].DEName;
-           /* if(document.getElementById('destDEName').selectedIndex >= 0){
-            getColumnList(document.getElementById('destDEName'));} */
+            if(document.getElementById('DEName').selectedIndex >= 0){
+            getColumnList(document.getElementById('destDEName'));} 
         } 
     }
     http.send(data); 
+  }
+
+  function addSrcColumnNames(pkColumnNumber,columnNumber){
+      console.log('DE ObjectID is : ' + dataExtensionID)
+    getEntrySourceColumnList(dataExtensionID,pkColumnNumber,columnNumber);    
   }
 
 
