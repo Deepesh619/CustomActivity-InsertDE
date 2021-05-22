@@ -39,6 +39,7 @@ connection.on('initActivity',function(data){
    document.getElementById('pkColumnNumber').value= pkColumnNumberData;
    document.getElementById('columnNumber').value= columnNumberData;
    createrows();
+   getDEList();
    for (var i=1;i<=pkColumnNumberData;i++){
     document.getElementById('pkSrcColumnName'+i).value = payload['arguments'].execute.inArguments[0]['pkSrcColumnName'+i];
     document.getElementById('pkDestColumnName'+i).value = payload['arguments'].execute.inArguments[0]['pkDestColumnName'+i];
@@ -48,7 +49,7 @@ connection.on('initActivity',function(data){
     document.getElementById('srcColumnName'+i).value = payload['arguments'].execute.inArguments[0]['srcColumnName'+i];
     document.getElementById('destColumnName'+i).value = payload['arguments'].execute.inArguments[0]['destColumnName'+i];
    }
-   getDEList();
+   
 }); 
 
 
