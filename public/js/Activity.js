@@ -24,44 +24,6 @@ function(eventDefinitionModel) {
 });
 
 
-function performRequest(){
-    /*var http = new XMLHttpRequest();
-    var url = 'https://mcllzpmqql69yd9kvcz1n-mj1fqy.auth.marketingcloudapis.com/v2/token';
-    var data = new FormData();
-    data.append('client_id', '1ye7xpmi31xwlu7xotjkauyv');
-    data.append('client_secret', 'Z3bAfZPzvGM05d7cu05RVTmx');
-    http.open('POST', url, true);
-    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-     //Send the proper header information along with the request
-
-    http.onreadystatechange = function() {//Call a function when the state changes.
-        if(http.readyState == 4 && http.status == 200) {
-            document.getElementById('DEName_v2').value= JSON.parse(http.responseText).access_token;
-        }
-    }
-    http.send(data); */
-
-  /* const url = "https://mcllzpmqql69yd9kvcz1n-mj1fqy.auth.marketingcloudapis.com/v2/token";
-fetch(url, {
-    method : "POST",
-    mode: 'no-cors',
-   // body: new FormData(document.getElementById("inputform")),
-    // -- or --
-     body : JSON.stringify({
-        'client_id' : '1ye7xpmi31xwlu7xotjkauyv',
-        'client_secret':'Z3bAfZPzvGM05d7cu05RVTmx'
-        // ...
-     })
-}).then(
-   // response => response.json() // .json(), etc.
-    // same as function(response) {return response.text();}
-).then(
-   // html => console.log(html)
-); 
-
-*/
-}
-
 // Below event is executed when activity is loaded on UI
 
 connection.on('initActivity',function(data){
@@ -69,7 +31,6 @@ connection.on('initActivity',function(data){
    if (data) {
        payload = data;
    }
-   performRequest();
    var pkColumnNumberData =  payload['arguments'].execute.inArguments[0].pkColumnNumber;
    var columnNumberData =  payload['arguments'].execute.inArguments[0].columnNumber;
    document.getElementById('DEName').value= payload['arguments'].execute.inArguments[0].DEName;
@@ -85,6 +46,7 @@ connection.on('initActivity',function(data){
     document.getElementById('srcColumnName'+i).value = payload['arguments'].execute.inArguments[0]['srcColumnName'+i];
     document.getElementById('destColumnName'+i).value = payload['arguments'].execute.inArguments[0]['destColumnName'+i];
    }
+   getDEList();
 }); 
 
 
@@ -253,5 +215,50 @@ function save () {
    payload['type'] = 'REST';
    connection.trigger('updateActivity', payload);
 }
+
+/*
+function getEntrySourceColumnList(objectID){
+    var http = new XMLHttpRequest();
+    var ID = objectID;
+    var url = 'https://mcservicecall-dev.herokuapp.com/MCService/getColumnList?ID='+ID + '&DEName=false';
+    var data = new FormData();
+    http.open('GET', url);
+    http.onreadystatechange = function() {//Call a function when the state changes.
+        if(http.readyState == 4 && http.status == 200) {
+            var obj = {};
+            obj = JSON.parse(this.responseText);
+            console.log(obj);
+            var select = document.getElementById("srcColumnName");
+            select.innerHTML = "";
+            for(var index in obj) {
+            select.options[select.options.length] = new Option(obj[index], obj[index]);
+            }
+            document.getElementById('srcColumnName').value= payload['arguments'].execute.inArguments[0].srcColumnName;
+        }
+    }
+    http.send(data); 
+  }
+  */
+
+  function getDEList(){
+    var http = new XMLHttpRequest();
+    var url = 'https://mcservicecall-dev.herokuapp.com/MCService/getDEList/';
+    var data = new FormData();
+    http.open('GET', url);
+    http.onreadystatechange = function() {//Call a function when the state changes.
+        if(http.readyState == 4 && http.status == 200) {
+            var obj = {};
+            obj = JSON.parse(this.responseText);
+            var select = document.getElementById("DEName");
+            for(var index in obj) {
+            select.options[select.options.length] = new Option(obj[index], index);// new Option(text-DEName, value-CustomerKey)
+            }
+            document.getElementById('DEName').value= payload['arguments'].execute.inArguments[0].DEName;
+           /* if(document.getElementById('destDEName').selectedIndex >= 0){
+            getColumnList(document.getElementById('destDEName'));} */
+        } 
+    }
+    http.send(data); 
+  }
 
 
