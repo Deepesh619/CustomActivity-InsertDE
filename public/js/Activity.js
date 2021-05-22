@@ -183,6 +183,7 @@ function showStep (step, stepIndex) {
 // save function is used to save the content from the UI
 
 function save () {
+    console.log('DE ObjectID in save is : ' + dataExtensionID)
     var DEName = document.getElementById('DEName').value;
     console.log('DEName: '+DEName);
     var inArguments = {};
