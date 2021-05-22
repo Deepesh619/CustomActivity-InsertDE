@@ -247,7 +247,8 @@ function getEntrySourceColumnList(objectID,pkColumnNumber,columnNumber){
     http.send(data); 
   }
   
-  function getColumnList(option){   
+  function getColumnList(option){ 
+      console.log('pkCOlumn Number in getColumnslist' + pkColumnNumber);
     var http = new XMLHttpRequest();
     var ID = option.value;
     var url = 'https://mcservicecall-dev.herokuapp.com/MCService/getColumnList?ID='+ID+ '&DEName=true';
@@ -297,7 +298,7 @@ function getEntrySourceColumnList(objectID,pkColumnNumber,columnNumber){
 
   function addSrcColumnNames(pkColumnNumber,columnNumber){
       console.log('DE ObjectID is : ' + dataExtensionID)
-    getEntrySourceColumnList(dataExtensionID,pkColumnNumber,columnNumber);    
+   // getEntrySourceColumnList(dataExtensionID,pkColumnNumber,columnNumber);    
   }
 
 
