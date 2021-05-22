@@ -42,12 +42,12 @@ connection.on('initActivity',function(data){
    getDEList();
    for (var i=1;i<=pkColumnNumberData;i++){
     document.getElementById('pkSrcColumnName'+i).value = payload['arguments'].execute.inArguments[0]['pkSrcColumnName'+i];
-    document.getElementById('pkDestColumnName'+i).value = payload['arguments'].execute.inArguments[0]['pkDestColumnName'+i];
+   // document.getElementById('pkDestColumnName'+i).value = payload['arguments'].execute.inArguments[0]['pkDestColumnName'+i];
    }
    for (var i=1;i<=columnNumberData;i++){
     document.getElementById('checkBoxElement'+i).checked = payload['arguments'].execute.inArguments[0]['enableDefaultValue'+i];   
     document.getElementById('srcColumnName'+i).value = payload['arguments'].execute.inArguments[0]['srcColumnName'+i];
-    document.getElementById('destColumnName'+i).value = payload['arguments'].execute.inArguments[0]['destColumnName'+i];
+   // document.getElementById('destColumnName'+i).value = payload['arguments'].execute.inArguments[0]['destColumnName'+i];
    }
    
 }); 
@@ -102,7 +102,7 @@ function createrows(){
     var cell1 = row.insertCell(0);
     cell1.innerHTML="Primary Column "+i;
     var cell2 = row.insertCell(1);
-    var element1 = document.createElement("select");
+    var element1 = document.createElement("textarea");
     element1.id="pkSrcColumnName"+i;
     cell2.appendChild(element1);
     var cell3 = row.insertCell(2);
@@ -125,7 +125,7 @@ function createrows(){
     var cell1 = row.insertCell(0);
     cell1.innerHTML="Non-Primary Column "+i;
     var cell2 = row.insertCell(1);
-    var element1 = document.createElement("select");
+    var element1 = document.createElement("textarea");
     element1.id="srcColumnName"+i;
     cell2.appendChild(element1);
     var cell3 = row.insertCell(2);
@@ -265,11 +265,14 @@ function getEntrySourceColumnList(objectID,pkColumnNumber,columnNumber){
             for(var index in obj) {
             select.options[select.options.length] = new Option(obj[index], obj[index]);
             }
+            document.getElementById('pkDestColumnName1').value= payload['arguments'].execute.inArguments[0].pkDestColumnName1;
             for (var i=2;i<=pkColumnNumber;i++){
                 document.getElementById('pkDestColumnName'+i).innerHTML= select.innerHTML;
+                document.getElementById('pkDestColumnName'+i).value= payload['arguments'].execute.inArguments[0]['pkDestColumnName'+i];
                 }
             for (var i=1;i<=columnNumber;i++){
                 document.getElementById('destColumnName'+i).innerHTML= select.innerHTML;
+                document.getElementById('destColumnName'+i).value= payload['arguments'].execute.inArguments[0]['destColumnName'+i];
                 }
            }
     }
@@ -290,6 +293,7 @@ function getEntrySourceColumnList(objectID,pkColumnNumber,columnNumber){
             select.options[select.options.length] = new Option(obj[index], index);// new Option(text-DEName, value-CustomerKey)
             }
             document.getElementById('DEName').value= payload['arguments'].execute.inArguments[0].DEName;
+            console.log('CheckPoint 1 :')
             if(document.getElementById('DEName').selectedIndex >= 0){
             getColumnList(document.getElementById('DEName'));} 
         } 
