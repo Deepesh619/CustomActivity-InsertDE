@@ -22,6 +22,7 @@ function(eventDefinitionModel) {
    if(eventDefinitionModel){
      eventDefinitionKey = eventDefinitionModel.eventDefinitionKey;
      dataExtensionID = eventDefinitionModel.dataExtensionId;
+     console.log('DE ObjectID in RTED is : ' + dataExtensionID)
    }
 });
 
@@ -38,6 +39,7 @@ connection.on('initActivity',function(data){
    document.getElementById('DEName').value= payload['arguments'].execute.inArguments[0].DEName;
    document.getElementById('pkColumnNumber').value= pkColumnNumberData;
    document.getElementById('columnNumber').value= columnNumberData;
+   console.log('DE ObjectID in initActivity is : ' + dataExtensionID)
    createrows();
    getDEList();
    for (var i=1;i<=pkColumnNumberData;i++){
