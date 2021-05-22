@@ -22,7 +22,8 @@ function(eventDefinitionModel) {
    if(eventDefinitionModel){
      eventDefinitionKey = eventDefinitionModel.eventDefinitionKey;
      dataExtensionID = eventDefinitionModel.dataExtensionId;
-     console.log('DE ObjectID in RTED is : ' + dataExtensionID)
+     console.log('DE ObjectID in RTED is : ' + dataExtensionID);
+     addSrcColumnNames(dataExtensionID);
    }
 });
 
@@ -142,7 +143,6 @@ function createrows(){
     cell4.appendChild(checkBoxElement1);
     //Code for checkbox Stop
     }
-    addSrcColumnNames(pkColumnNumber,columnNumber);
 }
 
 // onClickedBack function is called when user click on back button on UI
@@ -240,11 +240,14 @@ function getEntrySourceColumnList(objectID,pkColumnNumber,columnNumber){
             for(var index in obj) {
             select.options[select.options.length] = new Option(obj[index], obj[index]);
             }
+            document.getElementById('pkSrcColumnName1').value= payload['arguments'].execute.inArguments[0].pkSrcColumnName1;
             for (var i=2;i<=pkColumnNumber;i++){
                 document.getElementById('pkSrcColumnName'+i).innerHTML= select.innerHTML;
+                document.getElementById('pkSrcColumnName'+i).value= payload['arguments'].execute.inArguments[0]['pkSrcColumnName'+i];
                 }
             for (var i=1;i<=columnNumber;i++){
                 document.getElementById('srcColumnName'+i).innerHTML= select.innerHTML;
+                document.getElementById('srcColumnName'+i).value= payload['arguments'].execute.inArguments[0]['srcColumnName'+i];
                 }
         }
     }
@@ -304,9 +307,10 @@ function getEntrySourceColumnList(objectID,pkColumnNumber,columnNumber){
     http.send(data); 
   }
 
-  function addSrcColumnNames(pkColumnNumber,columnNumber){
+  function addSrcColumnNames(){
       console.log('DE ObjectID is : ' + dataExtensionID)
-   // getEntrySourceColumnList(dataExtensionID,pkColumnNumber,columnNumber);    
+      console.log('pkColumnNumber is : ' + pkColumnNumber)
+    getEntrySourceColumnList(dataExtensionID,pkColumnNumber,columnNumber);    
   }
 
 
