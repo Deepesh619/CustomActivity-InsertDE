@@ -43,13 +43,13 @@ connection.on('initActivity',function(data){
    console.log('DE ObjectID in initActivity is : ' + dataExtensionID)
    createrows();
    getDEList();
-   for (var i=1;i<=pkColumnNumberData;i++){
-    document.getElementById('pkSrcColumnName'+i).value = payload['arguments'].execute.inArguments[0]['pkSrcColumnName'+i];
-   // document.getElementById('pkDestColumnName'+i).value = payload['arguments'].execute.inArguments[0]['pkDestColumnName'+i];
-   }
    for (var i=1;i<=columnNumberData;i++){
     document.getElementById('checkBoxElement'+i).checked = payload['arguments'].execute.inArguments[0]['enableDefaultValue'+i];   
-    document.getElementById('srcColumnName'+i).value = payload['arguments'].execute.inArguments[0]['srcColumnName'+i];
+   if(document.getElementById('checkBoxElement'+i).checked == true){
+    document.getElementById('defaultText'+i).value = payload['arguments'].execute.inArguments[0]["srcColumnValue"+i];
+    document.getElementById('defaultText'+i).disabled = false;
+   }
+    // document.getElementById('srcColumnName'+i).value = payload['arguments'].execute.inArguments[0]['srcColumnName'+i];
    // document.getElementById('destColumnName'+i).value = payload['arguments'].execute.inArguments[0]['destColumnName'+i];
    }
    
@@ -136,12 +136,27 @@ function createrows(){
     element2.id="destColumnName"+i;
     cell3.appendChild(element2);
     var cell4 = row.insertCell(3);
-    // Code for Checkbox Start
+    //START : Code for Checkbox Start
     var checkBoxElement1 = document.createElement("input");
     checkBoxElement1.type="checkbox"
     checkBoxElement1.id="checkBoxElement" + i;
+    checkBoxElement1.onclick = function (){
+        var id=(this.id).substring(15);
+        var text = document.getElementById("defaultText"+id);
+        if(!this.checked){        
+        text.disabled = true;
+        }else{
+            text.disabled = false; 
+        }
+        };
     cell4.appendChild(checkBoxElement1);
-    //Code for checkbox Stop
+    //END : Code for checkbox 
+    //Code for Default Value TextArea
+    var cell5 = row.insertCell(4);
+    var defaultText = document.createElement("textarea");
+    defaultText.id="defaultText" + i;
+    defaultText.disabled=true;
+    cell5.appendChild(defaultText);
     }
 }
 
@@ -185,7 +200,6 @@ function showStep (step, stepIndex) {
 // save function is used to save the content from the UI
 
 function save () {
-    console.log('DE ObjectID in save is : ' + dataExtensionID)
     var DEName = document.getElementById('DEName').value;
     console.log('DEName: '+DEName);
     var inArguments = {};
@@ -203,7 +217,7 @@ function save () {
         inArguments["enableDefaultValue"+i]=enableDefaultValue;
         inArguments["srcColumnName"+i]=sourceColumnName;
         if (enableDefaultValue == true){
-        inArguments["srcColumnValue"+i]=sourceColumnName;
+        inArguments["srcColumnValue"+i]=document.getElementById('defaultText'+i).value;;
         }
         else {
         inArguments["srcColumnValue"+i]="{{Event."+ eventDefinitionKey +".\""+sourceColumnName+"\"}}";
