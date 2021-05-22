@@ -48,6 +48,7 @@ connection.on('initActivity',function(data){
    if(document.getElementById('checkBoxElement'+i).checked == true){
     document.getElementById('defaultText'+i).value = payload['arguments'].execute.inArguments[0]["srcColumnValue"+i];
     document.getElementById('defaultText'+i).disabled = false;
+    document.getElementById('srcColumnName'+i).disabled = true;
    }
     // document.getElementById('srcColumnName'+i).value = payload['arguments'].execute.inArguments[0]['srcColumnName'+i];
    // document.getElementById('destColumnName'+i).value = payload['arguments'].execute.inArguments[0]['destColumnName'+i];
@@ -142,11 +143,14 @@ function createrows(){
     checkBoxElement1.id="checkBoxElement" + i;
     checkBoxElement1.onclick = function (){
         var id=(this.id).substring(15);
-        var text = document.getElementById("defaultText"+id);
+        var defaultText = document.getElementById("defaultText"+id);
+        var srcColDropDown = document.getElementById("srcColumnName"+id);
         if(!this.checked){        
-        text.disabled = true;
+            defaultText.disabled = true;
+            srcColDropDown.disabled = false;
         }else{
-            text.disabled = false; 
+            defaultText.disabled = false; 
+            srcColDropDown.disabled = true; 
         }
         };
     cell4.appendChild(checkBoxElement1);
