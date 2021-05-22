@@ -290,7 +290,7 @@ function getEntrySourceColumnList(objectID,pkColumnNumber,columnNumber){
             }
             document.getElementById('DEName').value= payload['arguments'].execute.inArguments[0].DEName;
             if(document.getElementById('DEName').selectedIndex >= 0){
-            getColumnList(document.getElementById('destDEName'));} 
+            getColumnList(document.getElementById('DEName'));} 
         } 
     }
     http.send(data); 
