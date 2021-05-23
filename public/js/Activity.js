@@ -41,8 +41,8 @@ connection.on('initActivity',function(data){
    document.getElementById('pkColumnNumber').value= pkColumnNumberData;
    document.getElementById('columnNumber').value= columnNumberData;
    console.log('DE ObjectID in initActivity is : ' + dataExtensionID)
-   createrows();
    getDEList();
+   createrows();   
    for (var i=1;i<=columnNumberData;i++){
     document.getElementById('checkBoxElement'+i).checked = payload['arguments'].execute.inArguments[0]['enableDefaultValue'+i];   
    if(document.getElementById('checkBoxElement'+i).checked == true){
@@ -162,6 +162,8 @@ function createrows(){
     defaultText.disabled=true;
     cell5.appendChild(defaultText);
     }
+    if(document.getElementById('DEName').selectedIndex >= 0){
+        getColumnList(document.getElementById('DEName'));} 
 }
 
 // onClickedBack function is called when user click on back button on UI
@@ -318,8 +320,8 @@ function getEntrySourceColumnList(objectID,pkColumnNumber,columnNumber){
             }
             document.getElementById('DEName').value= payload['arguments'].execute.inArguments[0].DEName;
             console.log('CheckPoint 1 :')
-            if(document.getElementById('DEName').selectedIndex >= 0){
-            getColumnList(document.getElementById('DEName'));} 
+          /*  if(document.getElementById('DEName').selectedIndex >= 0){
+            getColumnList(document.getElementById('DEName'));} */
         } 
     }
     http.send(data); 
