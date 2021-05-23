@@ -70,6 +70,7 @@ function onClickedNext () {
        save();
    } else {
     createrows();
+    addSrcColumnNames(dataExtensionID);
        connection.trigger('nextStep');
    }
 }
