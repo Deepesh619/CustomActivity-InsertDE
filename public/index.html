@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!--<link rel="stylesheet" href="css/styles.css"> -->
     <script src="js/postmonger.js"></script>
+    <script src="js/Activity.js"></script>
    <!--  <script type="text/javascript" src="js/require.js"></script> -->
 </head>
 
@@ -16,13 +17,13 @@
     <table cellspacing="15">
         <tr><td>
         <p style = "font-family:system-ui;font-size:16px;">
-    Configure Destination Data Extension External Key: </p>
+            Select the Destination Data Extension Name </p>
 </td>
-    <td><textarea id="DEName"></textarea></td></tr>
+    <td><select id="DEName" onchange="getColumnList(this);"></select><!--<textarea  id="DEName_v2"></textarea>--></td></tr>
 
     
         <tr><td><p style = "font-family:system-ui;font-size:16px;">
-            Please mention the number of Primary columns you want to map: </p></td>
+            Select the number of primary key fields in the Destination Data Extension </p></td>
             <td><select  id="pkColumnNumber">
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -37,7 +38,7 @@
             </select></td>
             </tr>
             <tr><td><p style = "font-family:system-ui;font-size:16px;">
-                Please mention the number of Non-Primary columns you want to map: </p></td>
+                Select the number of non-primary key fields in the Destination Data Extension </p></td>
                 <td><select  id="columnNumber">
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -66,12 +67,13 @@
 <table id="columnTable" cellspacing="20">
 <tr>
     <td style="width: 200px;"><p style = "font-family:system-ui;font-size:16px;"><b>Column Number</b></p></td>
-    <td style="width: 250px;"><p style = "font-family:system-ui;font-size:16px;"><b>Source Column/Default Value</b></p></td>
+    <td style="width: 250px;"><p style = "font-family:system-ui;font-size:16px;"><b>Source Column</b></p></td>
     <td><p style = "font-family:system-ui;font-size:16px;"><b>Destination Column</b></p></td>
     <td><p style = "font-family:system-ui;font-size:16px;"><b>Enable Default Value</b></p></td>
+    <td><p style = "font-family:system-ui;font-size:16px;"><b>Default Value</b></p></td>
 </tr>
  </table>
-    <script type="module" src="js/Activity.js"></script>
+    
 </div>
 </body>
 

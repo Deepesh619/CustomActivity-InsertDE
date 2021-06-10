@@ -1,5 +1,6 @@
   
 // Declaring the global variables
+//var express     = require('http');
 var payload = {};
    var connection = new Postmonger.Session();
    var steps = [
@@ -10,8 +11,22 @@ var currentStep = steps[0].key;
 var pkColumnNumber = 0;
 var columnNumber = 0;
 var eventDefinitionKey;
+var dataExtensionID;
 
 connection.trigger('ready');
+// Below event is executed anytime and is used to get the event definition key
+
+connection.trigger('requestTriggerEventDefinition');
+connection.on('requestedTriggerEventDefinition',
+function(eventDefinitionModel) {
+   if(eventDefinitionModel){
+     eventDefinitionKey = eventDefinitionModel.eventDefinitionKey;
+     dataExtensionID = eventDefinitionModel.dataExtensionId;
+     console.log('DE ObjectID in RTED is : ' + dataExtensionID);
+     addSrcColumnNames(dataExtensionID);
+   }
+});
+
 
 // Below event is executed when activity is loaded on UI
 
@@ -25,27 +40,23 @@ connection.on('initActivity',function(data){
    document.getElementById('DEName').value= payload['arguments'].execute.inArguments[0].DEName;
    document.getElementById('pkColumnNumber').value= pkColumnNumberData;
    document.getElementById('columnNumber').value= columnNumberData;
-   createrows();
-   for (var i=1;i<=pkColumnNumberData;i++){
-    document.getElementById('pkSrcColumnName'+i).value = payload['arguments'].execute.inArguments[0]['pkSrcColumnName'+i];
-    document.getElementById('pkDestColumnName'+i).value = payload['arguments'].execute.inArguments[0]['pkDestColumnName'+i];
-   }
+   console.log('DE ObjectID in initActivity is : ' + dataExtensionID)
+   getDEList();
+   createrows();   
    for (var i=1;i<=columnNumberData;i++){
     document.getElementById('checkBoxElement'+i).checked = payload['arguments'].execute.inArguments[0]['enableDefaultValue'+i];   
-    document.getElementById('srcColumnName'+i).value = payload['arguments'].execute.inArguments[0]['srcColumnName'+i];
-    document.getElementById('destColumnName'+i).value = payload['arguments'].execute.inArguments[0]['destColumnName'+i];
+   if(document.getElementById('checkBoxElement'+i).checked == true){
+    document.getElementById('defaultText'+i).value = payload['arguments'].execute.inArguments[0]["srcColumnValue"+i];
+    document.getElementById('defaultText'+i).disabled = false;
+    document.getElementById('srcColumnName'+i).disabled = true;
    }
+    // document.getElementById('srcColumnName'+i).value = payload['arguments'].execute.inArguments[0]['srcColumnName'+i];
+   // document.getElementById('destColumnName'+i).value = payload['arguments'].execute.inArguments[0]['destColumnName'+i];
+   }
+   
 }); 
 
-// Below event is executed any and is used to get the event definition key
 
-connection.trigger('requestTriggerEventDefinition');
-connection.on('requestedTriggerEventDefinition',
-function(eventDefinitionModel) {
-   if(eventDefinitionModel){
-     eventDefinitionKey = eventDefinitionModel.eventDefinitionKey;
-   }
-}); 
 
 // Below event is executed when next/Done/Back is clicked on UI
 
@@ -59,6 +70,7 @@ function onClickedNext () {
        save();
    } else {
     createrows();
+    addSrcColumnNames(dataExtensionID);
        connection.trigger('nextStep');
    }
 }
@@ -95,11 +107,11 @@ function createrows(){
     var cell1 = row.insertCell(0);
     cell1.innerHTML="Primary Column "+i;
     var cell2 = row.insertCell(1);
-    var element1 = document.createElement("textarea");
+    var element1 = document.createElement("select");
     element1.id="pkSrcColumnName"+i;
     cell2.appendChild(element1);
     var cell3 = row.insertCell(2);
-    var element2 = document.createElement("textarea");
+    var element2 = document.createElement("select");
     element2.id="pkDestColumnName"+i;
     cell3.appendChild(element2);
     }
@@ -118,21 +130,41 @@ function createrows(){
     var cell1 = row.insertCell(0);
     cell1.innerHTML="Non-Primary Column "+i;
     var cell2 = row.insertCell(1);
-    var element1 = document.createElement("textarea");
+    var element1 = document.createElement("select");
     element1.id="srcColumnName"+i;
     cell2.appendChild(element1);
     var cell3 = row.insertCell(2);
-    var element2 = document.createElement("textarea");
+    var element2 = document.createElement("select");
     element2.id="destColumnName"+i;
     cell3.appendChild(element2);
     var cell4 = row.insertCell(3);
-    // Code for Checkbox Start
+    //START : Code for Checkbox Start
     var checkBoxElement1 = document.createElement("input");
     checkBoxElement1.type="checkbox"
     checkBoxElement1.id="checkBoxElement" + i;
+    checkBoxElement1.onclick = function (){
+        var id=(this.id).substring(15);
+        var defaultText = document.getElementById("defaultText"+id);
+        var srcColDropDown = document.getElementById("srcColumnName"+id);
+        if(!this.checked){        
+            defaultText.disabled = true;
+            srcColDropDown.disabled = false;
+        }else{
+            defaultText.disabled = false; 
+            srcColDropDown.disabled = true; 
+        }
+        };
     cell4.appendChild(checkBoxElement1);
-    //Code for checkbox Stop
+    //END : Code for checkbox 
+    //Code for Default Value TextArea
+    var cell5 = row.insertCell(4);
+    var defaultText = document.createElement("textarea");
+    defaultText.id="defaultText" + i;
+    defaultText.disabled=true;
+    cell5.appendChild(defaultText);
     }
+    if(document.getElementById('DEName').selectedIndex >= 0){
+        getColumnList(document.getElementById('DEName'));} 
 }
 
 // onClickedBack function is called when user click on back button on UI
@@ -192,7 +224,7 @@ function save () {
         inArguments["enableDefaultValue"+i]=enableDefaultValue;
         inArguments["srcColumnName"+i]=sourceColumnName;
         if (enableDefaultValue == true){
-        inArguments["srcColumnValue"+i]=sourceColumnName;
+        inArguments["srcColumnValue"+i]=document.getElementById('defaultText'+i).value;;
         }
         else {
         inArguments["srcColumnValue"+i]="{{Event."+ eventDefinitionKey +".\""+sourceColumnName+"\"}}";
@@ -211,5 +243,95 @@ function save () {
    payload['type'] = 'REST';
    connection.trigger('updateActivity', payload);
 }
+
+
+function getEntrySourceColumnList(objectID,pkColumnNumber,columnNumber){
+    var http = new XMLHttpRequest();
+    var ID = objectID;
+    var url = 'https://mcservicecall-dev.herokuapp.com/MCService/getColumnList?ID='+ID + '&DEName=false';
+    var data = new FormData();
+    http.open('GET', url);
+    http.onreadystatechange = function() {//Call a function when the state changes.
+        if(http.readyState == 4 && http.status == 200) {
+            var obj = {};
+            obj = JSON.parse(this.responseText);
+            console.log(obj);
+            var select = document.getElementById("pkSrcColumnName1");
+            select.innerHTML = "";
+            for(var index in obj) {
+            select.options[select.options.length] = new Option(obj[index], obj[index]);
+            }
+            document.getElementById('pkSrcColumnName1').value= payload['arguments'].execute.inArguments[0].pkSrcColumnName1;
+            for (var i=2;i<=pkColumnNumber;i++){
+                document.getElementById('pkSrcColumnName'+i).innerHTML= select.innerHTML;
+                document.getElementById('pkSrcColumnName'+i).value= payload['arguments'].execute.inArguments[0]['pkSrcColumnName'+i];
+                }
+            for (var i=1;i<=columnNumber;i++){
+                document.getElementById('srcColumnName'+i).innerHTML= select.innerHTML;
+                document.getElementById('srcColumnName'+i).value= payload['arguments'].execute.inArguments[0]['srcColumnName'+i];
+                }
+        }
+    }
+    http.send(data); 
+  }
+  
+  function getColumnList(option){ 
+      console.log('pkCOlumn Number in getColumnslist' + pkColumnNumber);
+    var http = new XMLHttpRequest();
+    var ID = option.value;
+    var url = 'https://mcservicecall-dev.herokuapp.com/MCService/getColumnList?ID='+ID+ '&DEName=true';
+    var data = new FormData();
+    http.open('GET', url);
+    http.onreadystatechange = function() {//Call a function when the state changes.
+        if(http.readyState == 4 && http.status == 200) {
+            var obj = {};
+            obj = JSON.parse(this.responseText);
+            console.log(obj);
+            var select = document.getElementById("pkDestColumnName1");
+            select.innerHTML = "";
+            for(var index in obj) {
+            select.options[select.options.length] = new Option(obj[index], obj[index]);
+            }
+            document.getElementById('pkDestColumnName1').value= payload['arguments'].execute.inArguments[0].pkDestColumnName1;
+            for (var i=2;i<=pkColumnNumber;i++){
+                document.getElementById('pkDestColumnName'+i).innerHTML= select.innerHTML;
+                document.getElementById('pkDestColumnName'+i).value= payload['arguments'].execute.inArguments[0]['pkDestColumnName'+i];
+                }
+            for (var i=1;i<=columnNumber;i++){
+                document.getElementById('destColumnName'+i).innerHTML= select.innerHTML;
+                document.getElementById('destColumnName'+i).value= payload['arguments'].execute.inArguments[0]['destColumnName'+i];
+                }
+           }
+    }
+    http.send(data); 
+  }
+
+  function getDEList(){
+    var http = new XMLHttpRequest();
+    var url = 'https://mcservicecall-dev.herokuapp.com/MCService/getDEList/';
+    var data = new FormData();
+    http.open('GET', url);
+    http.onreadystatechange = function() {//Call a function when the state changes.
+        if(http.readyState == 4 && http.status == 200) {
+            var obj = {};
+            obj = JSON.parse(this.responseText);
+            var select = document.getElementById("DEName");
+            for(var index in obj) {
+            select.options[select.options.length] = new Option(obj[index], index);// new Option(text-DEName, value-CustomerKey)
+            }
+            document.getElementById('DEName').value= payload['arguments'].execute.inArguments[0].DEName;
+            console.log('CheckPoint 1 :')
+          /*  if(document.getElementById('DEName').selectedIndex >= 0){
+            getColumnList(document.getElementById('DEName'));} */
+        } 
+    }
+    http.send(data); 
+  }
+
+  function addSrcColumnNames(){
+      console.log('DE ObjectID is : ' + dataExtensionID)
+      console.log('pkColumnNumber is : ' + pkColumnNumber)
+    getEntrySourceColumnList(dataExtensionID,pkColumnNumber,columnNumber);    
+  }
 
 
